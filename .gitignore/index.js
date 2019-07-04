@@ -165,4 +165,15 @@ client.on("message", async message => {
           message.channel.send(help_embed);
       }
    }});
-    
+client.on('message', message => {
+
+    if (message.content === prefix + "serverinfo") {
+        var embed = new Discord.RichEmbed()
+        .setDescription("Information du serveur Discord")
+        .addField("Nom du serveur :", message.guild.name)
+        .addField("Serveur créé le :", message.guild.createdAt)
+        .addField("Rejoins le :", message.member.joinedAt)
+        .addField("Nombre d'utilisateur sur le serveur :", message.guild.memberCount)
+        .setColor("RANDOM")
+    message.channel.sendEmbed(embed);
+    });
