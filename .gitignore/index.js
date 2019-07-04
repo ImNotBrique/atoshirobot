@@ -176,4 +176,5 @@ client.on('message', message => {
         .addField("Nombre d'utilisateur sur le serveur :", message.guild.memberCount)
         .setColor("RANDOM")
     message.channel.sendEmbed(embed);
-    });
+    }
+});
