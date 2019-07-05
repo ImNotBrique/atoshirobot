@@ -53,6 +53,7 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
 
   // Let's go with a few common example commands! Feel free to delete or change those.
+  client.on('message', message => {
 
   if(command === "ping") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
@@ -178,8 +179,6 @@ if (message.content === prefix + "info") {
     info_embed.setColor('#01FE23')
 message.channel.sendEmbed(embed)
 }
-
-client.on('message', message => {
   
 if (message.content.startsWith(prefix + "sondage")) {
     let args = message.content.split(" ").slice(1);
