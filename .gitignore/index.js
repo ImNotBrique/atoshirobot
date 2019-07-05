@@ -135,5 +135,14 @@ client.on("message", async message => {
     const fetched = await message.channel.fetchMessages({limit: deleteCount});
     message.channel.bulkDelete(fetched)
       .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
+      
+      
+   if(command === "annonce") {
+
+  var e = new Discord.RichEmbed()
+  .addField('Annonce :', args.join(' '))
+  .setColor('FF0000')
+  message.channel.send(e)
+}
   }
 });
