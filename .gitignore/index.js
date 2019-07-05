@@ -4,7 +4,6 @@ const Discord = require("discord.js");
 // some might call it `cootchie`. Either way, when you see `client.something`, or `bot.something`,
 // this is what we're refering to. Your client.
 const client = new Discord.Client();
-client.login(process.env.TOKEN);
 const prefix = ("*")
 
 client.on("ready", () => {
@@ -30,8 +29,6 @@ client.on("guildDelete", guild => {
   client.user.setStatus('dnd')
 });
 
-
-client.on("message", async message => {
   // This event will run on every single message received, from any channel or DM.
   
   // It's good practice to ignore other bots. This also makes your bot ignore itself
@@ -128,23 +125,5 @@ const command = args.shift().toLowerCase();
     const fetched = await message.channel.fetchMessages({limit: deleteCount});
     message.channel.bulkDelete(fetched)
       .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
-
-      if(command === "help") {
-        var embed = new Discord.RichEmbed()
-          .setTitle("Liste des commandes disponnibles :")
-          .setColor(0x00AE86)
-          .setDescription("Préfixe : *")
-          .setFooter("AtoshiRobot ")
-          .setTimestamp()
-          .addField("*ping", "Ping du BOT et de l'API de Discord.")
-          .setTimestamp()
-          .addField("*say", "Dire ce que vous voulez au BOT. **Usage :** *say Exemple")
-          .setTimestamp()
-          .addField("*purge", "Supprime un certain nombre de messages (entre 2 et 100). **Usage :** *purge 50")
-          .setTimestamp()
-          .addField("*kick", "Kick une personne. **Usage :** *kick @Utilisateur")
-          .setTimestamp()
-          .addField("*ban", "Ban une personne. **Usage :** *ban @Utilisateur")
-          message.channel.send(help_embed);
-      }
-   })
+    
+client.login(process.env.TOKEN);
