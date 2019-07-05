@@ -51,14 +51,14 @@ client.on("message", async message => {
   
   // Let's go with a few common example commands! Feel free to delete or change those.
   
-  if(command === "ping") {
+  if (message.content === prefix + "ping") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
     const m = await message.channel.send("Pooong");
     m.edit(`:ping_pong: Pong ! Latence :  ${m.createdTimestamp - message.createdTimestamp} ms. Latence API : ${Math.round(client.ping)} ms.`);
   }
   
-  if(command === "say") {
+  if (message.content === prefix + "say") {
     // makes the bot say something and delete the message. As an example, it's open to anyone to use. 
     // To get the "message" itself we join the `args` back into a string with spaces: 
     const sayMessage = args.join(" ");
@@ -68,7 +68,7 @@ client.on("message", async message => {
     message.channel.send(sayMessage);
   }
   
-  if(command === "kick") {
+  if (message.content === prefix + "kick") {
     // This command must be limited to mods and admins. In this example we just hardcode the role names.
     // Please read on Array.some() to understand this bit: 
     // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/some?
@@ -96,7 +96,7 @@ client.on("message", async message => {
 
   }
   
-  if(command === "ban") {
+  if (message.content === prefix + "ban") {
     // Most of this command is identical to kick, except that here we'll only let admins do it.
     // In the real world mods could ban too, but this is just an example, right? ;)
     if(!message.member.roles.some(r=>["Administrator"].includes(r.name)) )
@@ -116,7 +116,7 @@ client.on("message", async message => {
     message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
   }
   
-  if(command === "purge") {
+  if (message.content === prefix + "purge") {
     // This command removes all messages from all users in the channel, up to 100.
     
     // get the delete count, as an actual number.
@@ -131,40 +131,25 @@ client.on("message", async message => {
     message.channel.bulkDelete(fetched)
       .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
 
-      if(command === 'help') {
-        const help_embed = new Discord.RichEmbed()
-        
+      if (message.content === prefix + "help") {
+        var embed = new Discord.RichEmbed()
           .setTitle("Liste des commandes disponnibles :")
-          .setAuthor("AtoshiRobot", "https://imgur.com/eWMV9Vj")
-          /*
-           * Alternatively, use "#00AE86", [0, 174, 134] or an integer number.
-           */
           .setColor(0x00AE86)
           .setDescription("Préfixe : *")
-          .setFooter("AtoshiRobot ", "https://imgur.com/eWMV9Vj")
-          .setThumbnail("https://imgur.com/eWMV9Vj")
-          /*
-           * Takes a Date object, defaults to current date.
-           */
+          .setFooter("AtoshiRobot ")
           .setTimestamp()
-          .addField("*ping",
-            "Ping du BOT et de l'API de Discord.")
+          .addField("*ping", "Ping du BOT et de l'API de Discord.")
           .setTimestamp()
-          .addField("*say",
-            "Dire ce que vous voulez au BOT. **Usage :** *say Exemple")
+          .addField("*say", "Dire ce que vous voulez au BOT. **Usage :** *say Exemple")
           .setTimestamp()
-          .addField("*purge",
-            "Supprime un certain nombre de messages (entre 2 et 100). **Usage :** *purge 50")
+          .addField("*purge", "Supprime un certain nombre de messages (entre 2 et 100). **Usage :** *purge 50")
           .setTimestamp()
-          .addField("*kick",
-            "Kick une personne. **Usage :** *kick @Utilisateur")
+          .addField("*kick", "Kick une personne. **Usage :** *kick @Utilisateur")
           .setTimestamp()
-          .addField("*ban",
-            "Ban une personne. **Usage :** *ban @Utilisateur")
-         
+          .addField("*ban", "Ban une personne. **Usage :** *ban @Utilisateur")
           message.channel.send(help_embed);
       }
-   }});
+   });
 client.on('message', message => {
 
     if (message.content === prefix + "serverinfo") {
