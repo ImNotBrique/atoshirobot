@@ -5,8 +5,7 @@ const Discord = require("discord.js");
 // this is what we're refering to. Your client.
 const client = new Discord.Client();
 client.login(process.env.TOKEN);
-var prefix = ("*")
-
+const prefix = ("*")
 client.on("ready", () => {
   // This event will run if the bot starts, and logs in, successfully.
   console.log(`Bot lancé, avec ${client.users.size} utilisateurs, dans ${client.channels.size} salons de ${client.guilds.size} serveurs.`); 
@@ -49,14 +48,14 @@ const command = args.shift().toLowerCase();
   
   // Let's go with a few common example commands! Feel free to delete or change those.
   
-  if (message.content === prefix + "ping") {
+  if(command === "ping") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
     const m = await message.channel.send("Pooong");
     m.edit(`:ping_pong: Pong ! Latence :  ${m.createdTimestamp - message.createdTimestamp} ms. Latence API : ${Math.round(client.ping)} ms.`);
   }
   
-  if (message.content === prefix + "say") {
+  if(command === "say") {
     // makes the bot say something and delete the message. As an example, it's open to anyone to use. 
     // To get the "message" itself we join the `args` back into a string with spaces: 
     const sayMessage = args.join(" ");
@@ -66,7 +65,7 @@ const command = args.shift().toLowerCase();
     message.channel.send(sayMessage);
   }
   
-  if (message.content === prefix + "kick") {
+  if(command === "kick") {
     // This command must be limited to mods and admins. In this example we just hardcode the role names.
     // Please read on Array.some() to understand this bit: 
     // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/some?
@@ -94,7 +93,7 @@ const command = args.shift().toLowerCase();
 
   }
   
-  if (message.content === prefix + "ban") {
+  if(command === "ban") {
     // Most of this command is identical to kick, except that here we'll only let admins do it.
     // In the real world mods could ban too, but this is just an example, right? ;)
     if(!message.member.roles.some(r=>["Administrator"].includes(r.name)) )
@@ -114,7 +113,7 @@ const command = args.shift().toLowerCase();
     message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
   }
   
-  if (message.content === prefix + "purge") {
+  if(command === "purge") {
     // This command removes all messages from all users in the channel, up to 100.
     
     // get the delete count, as an actual number.
@@ -129,7 +128,7 @@ const command = args.shift().toLowerCase();
     message.channel.bulkDelete(fetched)
       .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
 
-      if (message.content === prefix + "help") {
+      if(command === "help") {
         var embed = new Discord.RichEmbed()
           .setTitle("Liste des commandes disponnibles :")
           .setColor(0x00AE86)
@@ -150,7 +149,7 @@ const command = args.shift().toLowerCase();
    });
 client.on('message', message => {
 
-    if (message.content === prefix + "serverinfo") {
+    if(command === "serverinfo") {
         var embed = new Discord.RichEmbed()
         .setDescription("Information du serveur Discord")
         .addField("Nom du serveur :", message.guild.name)
