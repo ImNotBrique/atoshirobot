@@ -148,14 +148,3 @@ const command = args.shift().toLowerCase();
           message.channel.send(help_embed);
       }
    })
-
-    if(command === "serverinfo") {
-        var embed = new Discord.RichEmbed()
-        .setDescription("Information du serveur Discord")
-        .addField("Nom du serveur :", message.guild.name)
-        .addField("Serveur créé le :", message.guild.createdAt)
-        .addField("Rejoins le :", message.member.joinedAt)
-        .addField("Nombre d'utilisateur sur le serveur :", message.guild.memberCount)
-        .setColor("RANDOM")
-    message.channel.sendEmbed(embed);
-    });
