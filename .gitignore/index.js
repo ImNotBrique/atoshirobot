@@ -5,6 +5,7 @@ const Discord = require("discord.js");
 // this is what we're refering to. Your client.
 const client = new Discord.Client();
 client.login(process.env.TOKEN);
+const prefix = ("*")
 
 client.on("ready", () => {
   // This event will run if the bot starts, and logs in, successfully.
@@ -149,7 +150,7 @@ const command = args.shift().toLowerCase();
    });
 client.on('message', message => {
 
-    if(command === "serverinfo") {
+    if (message.content === prefix + "serverinfo") {
         var embed = new Discord.RichEmbed()
         .setDescription("Information du serveur Discord")
         .addField("Nom du serveur :", message.guild.name)
@@ -158,5 +159,4 @@ client.on('message', message => {
         .addField("Nombre d'utilisateur sur le serveur :", message.guild.memberCount)
         .setColor("RANDOM")
     message.channel.sendEmbed(embed);
-    }
-});
+    });
