@@ -15,21 +15,21 @@ client.on("ready", () => {
   console.log(`Bot lancé, avec ${client.users.size} utilisateurs, dans ${client.channels.size} salons de ${client.guilds.size} serveurs.`); 
   // Example of changing the bot's playing game to something useful. `client.user` is what the
   // docs refer to as the "ClientUser".
-  client.user.setActivity(`${client.guilds.size} serveurs`, { type: 'WATCHING'});
+  client.user.setActivity(`${client.guilds.size} serveurs | Prefix : +`, { type: 'WATCHING'});
   client.user.setStatus('dnd')
 });
 
 client.on("guildCreate", guild => {
   // This event triggers when the bot joins a guild.
   console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-  client.user.setActivity(`${client.guilds.size} serveurs`, { type: 'WATCHING'});
+  client.user.setActivity(`${client.guilds.size} serveurs | Prefix : +`, { type: 'WATCHING'});
   client.user.setStatus('dnd')
 });
 
 client.on("guildDelete", guild => {
   // this event triggers when the bot is removed from a guild.
   console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-  client.user.setActivity(` ${client.guilds.size} serveurs`, { type: 'WATCHING'});
+  client.user.setActivity(` ${client.guilds.size} serveurs | Prefix : +`, { type: 'WATCHING'});
   client.user.setStatus('dnd')
 });
 
