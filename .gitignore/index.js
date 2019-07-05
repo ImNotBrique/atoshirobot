@@ -35,6 +35,8 @@ client.on("ready", () => {
     client.user.setStatus('dnd')
   });
 
+
+client.on("message", async message => {
   // This event will run on every single message received, from any channel or DM.
   
   // It's good practice to ignore other bots. This also makes your bot ignore itself
@@ -53,23 +55,11 @@ client.on("ready", () => {
   const command = args.shift().toLowerCase();
   
   // Let's go with a few common example commands! Feel free to delete or change those.
-    
-  client.on('message', msg => {
-  if (msg.content === 'Athopia') {
-    msg.reply('Athopia > All > :heart: !');
-  }
-  if (msg.content === 'Break') {
-    msg.reply('ImNotBreak > All > :heart: !');
-  }
-  if (msg.content === 'Down') {
-    msg.reply('_Down > All > :heart: !');
-  }
-  
   
   if(command === "ping") {
     // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
     // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
-    const m = await message.channel.send("Ping?");
+    const m = await message.channel.send(":ping_pong: Pong ! Latence : 0 ms. Latence API : 0 ms.");
     m.edit(`:ping_pong: Pong ! Latence :  ${m.createdTimestamp - message.createdTimestamp} ms. Latence API : ${Math.round(client.ping)} ms.`);
   }
   
@@ -147,4 +137,3 @@ client.on("ready", () => {
       .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
   }
 });
-
