@@ -144,6 +144,22 @@ const command = args.shift().toLowerCase();
         .addField("Nombre d'utilisateur sur le serveur :", message.guild.memberCount)
         .setColor("RANDOM")
 message.channel.sendEmbed(embed);
-    }}
-  })
+  }
+    
+  if (message.content.startsWith(prefix + "sondage")) {
+    let args = message.content.split(" ").slice(1);
+    let thingToEcho = args.join(" ")
+    var embed = new Discord.RichEmbed()
+        embed.setDescription("Sondage")
+        embed.addField(thingToEcho, "Répondre avec :white_check_mark: ou :x:")
+        embed.setColor('#01A1FE')
+    message.guild.channels.find("name", "sondage").sendEmbed(embed)
+    .then(function (message){
+        message.react("✔")
+        message.react("✘")
+    }).catch(function() {
+    });
+    }else{
+        message.reply("Tu n'a pas la permission")
+    }
 })
