@@ -147,10 +147,9 @@ const command = args.shift().toLowerCase();
           .addField("*ban", "Ban une personne. **Usage :** *ban @Utilisateur")
           message.channel.send(help_embed);
       }
-   });
-client.on('message', message => {
+   })
 
-    if (message.content === prefix + "serverinfo") {
+    if(command === "serverinfo") {
         var embed = new Discord.RichEmbed()
         .setDescription("Information du serveur Discord")
         .addField("Nom du serveur :", message.guild.name)
