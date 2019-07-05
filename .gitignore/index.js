@@ -7,6 +7,9 @@ const client = new Discord.Client();
 client.login(process.env.TOKEN);
 var prefix = ("*")
 
+const config = require("./config.json");
+
+
 client.on("ready", () => {
   // This event will run if the bot starts, and logs in, successfully.
   console.log(`Bot lancé, avec ${client.users.size} utilisateurs, dans ${client.channels.size} salons de ${client.guilds.size} serveurs.`); 
