@@ -134,7 +134,7 @@ client.on("message", async message => {
     message.channel.bulkDelete(fetched)
       .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
 
-      if(command === 'help') {
+      if(command === "help") {
         const help_embed = new Discord.RichEmbed()
           .setTitle("Liste des commandes disponnibles :")
           .setAuthor("AtoshiRobot", "https://imgur.com/eWMV9Vj")
