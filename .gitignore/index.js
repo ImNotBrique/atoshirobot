@@ -106,7 +106,7 @@ message.channel.send(e)
   }
    if(message.content === prefix + "invite"){
     var e = new Discord.RichEmbed()
-   .addField('Invitation du BOT','[Invitation du BOT](https://discordapp.com/oauth2/authorize?client_id=597861336332107777&scope=bot&permissions=168088)\n [Chaine YouTube de ImNotBREAK](https://www.youtube.com/channel/UCjV7tGLVDlxsT3HT9xvYkiw?)')    
+   .addField('Invitation du BOT','[Invitation du BOT](https://discordapp.com/api/oauth2/authorize?client_id=596672194407563265&permissions=2146958839&scope=bot)\n [Chaine YouTube de ImNotBREAK](https://www.youtube.com/channel/UCjV7tGLVDlxsT3HT9xvYkiw?)')    
       .setColor('7289da')   
     .setFooter('©️ AthopiaTEAM | Powered by GlitchBot Creator')
     message.channel.send(e)
