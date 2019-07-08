@@ -1,140 +1,121 @@
-// Load up the discord.js library
-const Discord = require("discord.js");
+const Discord = require('discord.js')
+const express = require('express');
+const app = express();
+const prefix = "!"
+const bot = new Discord.Client()    
+const talkedRecently = new Set();
+bot.login(process.env.TOKEN)
 
-// This is your client. Some people call it `bot`, some people call it `self`, 
-// some might call it `cootchie`. Either way, when you see `client.something`, or `bot.something`,
-// this is what we're refering to. Your client.
-const client = new Discord.Client();
 
-// Here we load the config.json file that contains our token and our prefix values. 
-const config = require("./config.json");
-client.login(process.env.TOKEN)
-// config.token contains the bot's token
-// config.prefix contains the message prefix.
+bot.on('ready', function() { 
+ console.log('Je suis connecté :D') 
 
-client.on("ready", () => {
-    // This event will run if the bot starts, and logs in, successfully.
-    console.log(`Bot lancé, avec ${client.users.size} utilisateurs, dans ${client.channels.size} salons de ${client.guilds.size} serveurs.`); 
-    // Example of changing the bot's playing game to something useful. `client.user` is what the
-    // docs refer to as the "ClientUser".
-    client.user.setActivity(`${client.guilds.size} serveurs | Prefix : +`, { type: 'WATCHING'});
-    client.user.setStatus('dnd')
+    bot.user.setActivity(`${bot.guilds.size} serveurs | Prefix : !`, { type: 'WATCHING'});
+    bot.user.setStatus('dnd')
   });
   
-  client.on("guildCreate", guild => {
+  bot.on("guildCreate", guild => {
     // This event triggers when the bot joins a guild.
     console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-    client.user.setActivity(`${client.guilds.size} serveurs | Prefix : +`, { type: 'WATCHING'});
-    client.user.setStatus('dnd')
+    bot.user.setActivity(`${bot.guilds.size} serveurs | Prefix : !`, { type: 'WATCHING'});
+    bot.user.setStatus('dnd')
   });
   
-  client.on("guildDelete", guild => {
+  bot.on("guildDelete", guild => {
     // this event triggers when the bot is removed from a guild.
     console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-    client.user.setActivity(` ${client.guilds.size} serveurs | Prefix : +`, { type: 'WATCHING'});
-    client.user.setStatus('dnd')
-  });
+    bot.user.setActivity(` ${bot.guilds.size} serveurs | Prefix : !`, { type: 'WATCHING'});
+    bot.user.setStatus('dnd')
+});
 
 
-client.on("message", async message => {
-  // This event will run on every single message received, from any channel or DM.
-  
-  // It's good practice to ignore other bots. This also makes your bot ignore itself
-  // and not get into a spam loop (we call that "botception").
-  if(message.author.bot) return;
-  
-  // Also good practice to ignore any message that does not start with our prefix, 
-  // which is set in the configuration file.
-  if(message.content.indexOf(config.prefix) !== 0) return;
-  
-  // Here we separate our "command" name, and our "arguments" for the command. 
-  // e.g. if we have the message "+say Is this the real life?" , we'll get the following:
-  // command = say
-  // args = ["Is", "this", "the", "real", "life?"]
-  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+
+bot.on('message', message => {
+    const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
-  
-  // Let's go with a few common example commands! Feel free to delete or change those.
-  
-  if(command === "ping") {
-    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-    // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
-    const m = await message.channel.send(":ping_pong: Pong ! Latence : 0 ms. Latence API : 0 ms.");
-    m.edit(`:ping_pong: Pong ! Latence :  ${m.createdTimestamp - message.createdTimestamp} ms. Latence API : ${Math.round(client.ping)} ms.`);
-  }
-  
-  if(command === "say") {
-    // makes the bot say something and delete the message. As an example, it's open to anyone to use. 
-    // To get the "message" itself we join the `args` back into a string with spaces: 
-    const sayMessage = args.join(" ");
-    // Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
-    message.delete().catch(O_o=>{}); 
-    // And we get the bot to say the thing: 
-    message.channel.send(sayMessage);
-  }
-  
-  if(command === "kick") {
-    // This command must be limited to mods and admins. In this example we just hardcode the role names.
-    // Please read on Array.some() to understand this bit: 
-    // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/some?
-    if(!message.member.roles.some(r=>["Administrator", "Moderator"].includes(r.name)) )
-      return message.reply("Sorry, you don't have permissions to use this!");
-    
-    // Let's first check if we have a member and if we can kick them!
-    // message.mentions.members is a collection of people that have been mentioned, as GuildMembers.
-    // We can also support getting the member by ID, which would be args[0]
-    let member = message.mentions.members.first() || message.guild.members.get(args[0]);
-    if(!member)
-      return message.reply("Please mention a valid member of this server");
-    if(!member.kickable) 
-      return message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?");
-    
-    // slice(1) removes the first part, which here should be the user mention or ID
-    // join(' ') takes all the various parts to make it a single string.
-    let reason = args.slice(1).join(' ');
-    if(!reason) reason = "No reason provided";
-    
-    // Now, time for a swift kick in the nuts!
-    await member.kick(reason)
-      .catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
-    message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
 
-  }
-  
-  if(command === "ban") {
-    // Most of this command is identical to kick, except that here we'll only let admins do it.
-    // In the real world mods could ban too, but this is just an example, right? ;)
-    if(!message.member.roles.some(r=>["Administrator"].includes(r.name)) )
-      return message.reply("Sorry, you don't have permissions to use this!");
-    
-    let member = message.mentions.members.first();
-    if(!member)
-      return message.reply("Please mention a valid member of this server");
-    if(!member.bannable) 
-      return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
+ if(command === "kill"){
+      if(talkedRecently.has(message.author.id)) {
+            message.channel.send("Attends 1 minute " + message.author.username + " !");
+    } else {
+  let pseudo =  message.mentions.users.first().username
+    if(!message.mentions.members.first()) return message.channel.send('Vous devez mentionner quelqu\'un !')
+var e = new Discord.RichEmbed()
+.setTitle(`${message.author.username} a tué ${pseudo} :skull_crossbones:`)
+.setImage("https://cdn.discordapp.com/attachments/580117511941521427/592803283114917910/tenor_1.gif")
+.setColor('000000')
+.setFooter('©️ AthopiaTEAM | Powered by GlitchBot Creator')
+message.channel.send(e)
+        talkedRecently.add(message.author.id);
+        setTimeout(() => {
+          
+          talkedRecently.delete(message.author.id);
+        }, 60000);
+    }
 
-    let reason = args.slice(1).join(' ');
-    if(!reason) reason = "No reason provided";
-    
-    await member.ban(reason)
-      .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
-    message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
-  }
+}
+  if(command === "ping"){
   
-  if(command === "purge") {
-    // This command removes all messages from all users in the channel, up to 100.
+  message.channel.send(':ping_pong: Pong ! 0 ms').then((msg) => {
     
-    // get the delete count, as an actual number.
-    const deleteCount = parseInt(args[0], 10);
+    msg.edit(':ping_pong: Pong ! ' + `${Date.now() - message.createdTimestamp}` + " ms !")
+  });
+}
+  
+   if(command ===  'clear'){
+     if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send('Il vous faut la permission `MANAGE_MESSAGES` pour éxécuter cette commande !   Erreur: 009')
+    if((!args[0])) return message.channel.send('Merci de spécifier un nombre valide de messages à supprimer !')
+    if(args[0] > 100) return message.channel.send('Merci de spécifier un nombre inférieur ou égale à 100')
     
-    // Ooooh nice, combined conditions. <3
-    if(!deleteCount || deleteCount < 2 || deleteCount > 100)
-      return message.reply("Please provide a number between 2 and 100 for the number of messages to delete");
+    message.channel.bulkDelete(args[0])
+       } 
+ if(message.content === prefix + 'serverinfo'){
+    if(!message.guild) return message.channel.send('Une erreur s\'est produite !')
+    var e = new Discord.RichEmbed()
+    .setThumbnail(message.guild.iconURL)
+    .setAuthor(message.guild.name + ' (' + message.guild.id + ')', message.guild.iconURL)
+    .addField('** :page_facing_up: Salons**', `:arrow_right: ${message.guild.channels.filter(off => off.type === 'text').size} textuels, ${message.guild.channels.filter(off => off.type === 'voice').size} vocaux\n:arrow_right: Salon afk: ${message.guild.afkChannel}`)
+    .addField('** :boy:  Membres**', `:arrow_right: ${message.guild.memberCount} membres (${message.guild.members.filter(o => o.presence.status === 'online').size} en ligne &  ${message.guild.members.filter(member => member.user.bot).size} bot)\n:arrow_right: Owner:${message.guild.owner.user} (${message.guild.ownerID})`)
+    .addField('** :heavy_plus_sign:  Informations additionelles**',`:arrow_right: Rôles: ${message.guild.roles.size}\n:arrow_right: Région: ${message.guild.region}\n:arrow_right: Date de création: ${message.guild.createdAt}\n:arrow_right: Niveau de vérification: ${message.guild.verificationLevel}`)
+    .setFooter('©️ AthopiaTEAM | Powered by GlitchBot Creator ')
+  .setColor('RANDOM')
+    message.channel.send(e)
+    }
+   if(command === 'userinfo'){
+  var useruseruser = message.guild.member(message.mentions.users.first());
+    var useruseruserauthor = message.mentions.users.first();
+    if(!useruseruser) {
+      var e = new Discord.RichEmbed()
+      .setThumbnail(message.author.displayAvatarURL)
+      .setAuthor(message.author.username + '#' + message.author.discriminator + ' (' + message.author.id + ')', message.author.displayAvatarURL)
+      .addField('** Informations de l\'utilisateur**', `:arrow_right: Création du compte: ${message.author.createdAt}\n:arrow_right: Statut: ${message.author.presence.status}\n:arrow_right: Jeu: ${message.author.presence.game}`)
+      .addField('** Informations du membre**', `:arrow_right: Surnom: ${message.member.nickname}\n:arrow_right: A rejoint le serveur : ${message.member.joinedAt}\n:arrow_right: Nombre de rôles: ${message.member.roles.size - 1}`)
+      .setColor(message.member.displayHexColor)
+      message.channel.send(e)
+    }else{
+      var e = new Discord.RichEmbed()
+      .setThumbnail(useruseruserauthor.displayAvatarURL)
+      .setAuthor(useruseruserauthor.username + '#' + useruseruserauthor.discriminator + ' (' + useruseruserauthor.id + ')', useruseruserauthor.displayAvatarURL)
+      .addField('** Informations de l\'utilisateur**', `:arrow_right: Création du compte: ${useruseruserauthor.createdAt}\n> Statut: ${useruseruser.presence.status}\n> Jeu: ${useruseruser.presence.game}`)
+      .addField('** Informations du membre**', `:arrow_right: Surnom: ${useruseruser.nickname}\n> A rejoint le: ${useruseruser.joinedAt}\n> Nombre de rôles: ${useruseruser.roles.size - 1}`)
+      .setFooter('©️ AthopiaTEAM | Powered by GlitchBot Creator')
+      .setColor('RANDOM')
+      message.channel.send(e)
+    }
     
-    // So we get our messages, and delete them. Simple enough, right?
-    const fetched = await message.channel.fetchMessages({limit: deleteCount});
-    message.channel.bulkDelete(fetched)
-      .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
-      
-  }}
-          });
+  }
+   if(message.content === prefix + "invite"){
+    var e = new Discord.RichEmbed()
+   .addField('Invitation du BOT','[Invitation du BOT](https://discordapp.com/oauth2/authorize?client_id=597861336332107777&scope=bot&permissions=168088)\n [Chaine YouTube de ImNotBREAK](https://www.youtube.com/channel/UCjV7tGLVDlxsT3HT9xvYkiw?)')    
+      .setColor('7289da')   
+    .setFooter('©️ AthopiaTEAM | Powered by GlitchBot Creator')
+    message.channel.send(e)
+   }
+  if(message.content === prefix + "partenaires"){
+    var e = new Discord.RichEmbed()
+   .addField('[Invitation du BOT](https://discord.gg/PkbhD3f)')    
+      .setColor('7289da')   
+    .setFooter('©️ AthopiaTEAM | Powered by GlitchBot Creator')
+    message.channel.send(e)
+  }
+});
